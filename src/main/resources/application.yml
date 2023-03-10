@@ -1,0 +1,37 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /    #프로젝트 들어가기 위한 진입점
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/  #prefix = Controller가 return 할때 앞에 붙여주는 경로명
+      suffix: .jsp 					         #suffix = 뒤에붙여주는 경로명
+      
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Seoul
+    username: cos
+    password: cos1234
+    
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+       #최초에만 create로 하고 그 이후에는 update로 해야함(안하면 계속 create됨)
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+     
