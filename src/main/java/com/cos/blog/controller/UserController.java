@@ -113,7 +113,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		System.out.println("카카오 아이디(번호) : "+kakaoProfile.getId());
-		System.out.println("카카오 이메일 : "+kakaoProfile.getKakao_account().getEmail());
+		System.out.println("카카오 이메일test : "+kakaoProfile.getKakao_account().getEmail());
 		
 		return  response2.getBody();	
 	}
