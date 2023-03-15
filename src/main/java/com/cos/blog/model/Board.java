@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -53,6 +54,7 @@ private User user; // DB는 오브젝트를 저장할 수 없다. FK, 자바는 
 
 @OneToMany(mappedBy = "board", fetch = FetchType.EAGER) //mappedBy 연관관계의 주인이 아니다(FK 가 아니다) DB 컬럼만들필요없음
 @JsonIgnoreProperties({"board"})
+@OrderBy("id desc")
 private List<Reply> replys;
 
 @CreationTimestamp
