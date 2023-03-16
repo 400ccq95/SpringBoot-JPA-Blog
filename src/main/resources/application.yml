@@ -11,7 +11,7 @@ spring:
   mvc:
     view:
       prefix: /WEB-INF/views/  #prefix = Controller가 return 할때 앞에 붙여주는 경로명
-      suffix: .jsp 					         #suffix = 뒤에붙여주는 경로명
+      suffix: .jsp                   #suffix = 뒤에붙여주는 경로명
       
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -37,4 +37,3 @@ spring:
 
 cos:
   key: cos1234
-     

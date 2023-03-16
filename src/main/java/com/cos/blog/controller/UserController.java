@@ -24,10 +24,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 // 인증이 안된 사용자들이 출입할 수 있는 경로를 /auth/** 허용
 // 그냥 주소가 / 이면 index.jsp 허용
-// static 이하에 있는 /js/**, /css/** , /image/**
+// static이하에 있는 /js/**, /css/**, /image/**
 
 @Controller
 public class UserController {
@@ -44,29 +43,31 @@ public class UserController {
 	@GetMapping("/auth/joinForm")
 	public String joinForm() {
 		return "user/joinForm";
-		
 	}
-	
+
 	@GetMapping("/auth/loginForm")
 	public String loginForm() {
-		
 		return "user/loginForm";
 	}
 	
 	@GetMapping("/auth/kakao/callback")
-	public String kakaoCallback( String code) {
+	public String kakaoCallback(String code) { // Data를 리턴해주는 컨트롤러 함수
 		
+		// POST방식으로 key=value 데이터를 요청 (카카오쪽으로)
+		// Retrofit2
+		// OkHttp
+		// RestTemplate
 		
 		RestTemplate rt = new RestTemplate();
 		
 		// HttpHeader 오브젝트 생성
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 		
 		// HttpBody 오브젝트 생성
-		MultiValueMap<String, String> params= new LinkedMultiValueMap<>();
-		params.add("grant_type","authorization_code");
-		params.add("client_id", "a2a1c0dcf696c91e8cfff83a269cf584");
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("grant_type", "authorization_code");
+		params.add("client_id", "3633f272966b3511c6f84692f71d88dd");
 		params.add("redirect_uri", "http://localhost:8000/auth/kakao/callback");
 		params.add("code", code);
 		
@@ -82,6 +83,7 @@ public class UserController {
 				String.class
 		);
 		
+		// Gson, Json Simple, ObjectMapper
 		ObjectMapper objectMapper = new ObjectMapper();
 		OAuthToken oauthToken = null;
 		try {
@@ -92,8 +94,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		
-		
-		System.out.println("카카오 엑세스 토큰:" + oauthToken.getAccess_token());
+		System.out.println("카카오 엑세스 토큰 : "+oauthToken.getAccess_token());
 		
 		RestTemplate rt2 = new RestTemplate();
 		
@@ -113,6 +114,7 @@ public class UserController {
 				kakaoProfileRequest2,
 				String.class
 		);
+		System.out.println(response2.getBody());
 		
 		ObjectMapper objectMapper2 = new ObjectMapper();
 		KakaoProfile kakaoProfile = null;
@@ -123,12 +125,7 @@ public class UserController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		System.out.println("카카오 아이디(번호) : "+kakaoProfile.getId());
-		System.out.println("카카오 이메일 : "+kakaoProfile.getKakao_account().getEmail());
 		
-		System.out.println("블로그서버 유저네임 : "+kakaoProfile.getKakao_account().getEmail()+"_"+kakaoProfile.getId());
-		System.out.println("블로그서버 이메일 : "+kakaoProfile.getKakao_account().getEmail());
-		System.out.println("블로그서버 패스워드 : "+cosKey);
 
 		
 		User kakaoUser = User.builder()
@@ -138,6 +135,7 @@ public class UserController {
 				.oauth("kakao")
 				.build();
 		
+		// 가입자 혹은 비가입자 체크 해서 처리
 		User originUser = userService.회원찾기(kakaoUser.getUsername());
 
 		if(originUser.getUsername() == null) {
@@ -147,16 +145,14 @@ public class UserController {
 		
 		System.out.println("자동 로그인을 진행합니다.");
 		// 로그인 처리
-	Authentication authentication = 
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), cosKey));
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), cosKey));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
-	return "redirect:/";
-
+		return "redirect:/";
 	}
-	
+
 	@GetMapping("/user/updateForm")
-	public String updateForm() {
-		return "user/updateForm";
+	public String updateForm() {	
+	  return "user/updateForm";
 	}
 }
